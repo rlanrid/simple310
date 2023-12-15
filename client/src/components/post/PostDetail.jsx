@@ -1,11 +1,15 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux';
 
 const PostDetail = () => {
     const [postInfo, setPostInfo] = useState({});
+    const [flag, setFlag] = useState(false);
+
     let params = useParams();
     let navigate = useNavigate();
+    const user = useSelector(state => state.user);
 
     useEffect(() => {
         let body = {
@@ -16,6 +20,7 @@ const PostDetail = () => {
             .then((response) => {
                 console.log(response);
                 setPostInfo(response.data.post);
+                setFlag(true);
             })
             .catch((err) => {
                 console.log(err)
@@ -44,21 +49,29 @@ const PostDetail = () => {
 
     return (
         <div className='detail__wrap'>
-            <div className='detail__title'>
-                <h3>{postInfo.title}</h3>
-                <span className='auth'>rlan</span>
-            </div>
-            <div className='detail__content'>
-                {postInfo.image ? <img src={postInfo.image} alt={postInfo.title} /> : null}
-                {postInfo.content}
-            </div>
-            <div className='detail__btn'>
-                <Link to={`/modify/${postInfo.postNum}`}>
-                    수정
-                </Link>
-                <button onClick={() => DeleteHandler()}>삭제</button>
-                <Link to='/list'>목록</Link>
-            </div>
+            {flag ? (
+                <>
+                    <div className='detail__title'>
+                        <h3>{postInfo.title}</h3>
+                        <span className='auth'>{postInfo.author.displayName}</span>
+                    </div>
+                    <div className='detail__content'>
+                        {postInfo.image ? <img src={postInfo.image} alt={postInfo.title} /> : null}
+                        {postInfo.content}
+                    </div>
+                    {user.uid === postInfo.author.uid && (
+                        <div className='detail__btn'>
+                            <Link to={`/modify/${postInfo.postNum}`}>
+                                수정
+                            </Link>
+                            <button onClick={() => DeleteHandler()}>삭제</button>
+                            <Link to='/list'>목록</Link>
+                        </div>
+                    )}
+                </>
+            ) : (
+                <div>로딩중</div>
+            )}
         </div>
     )
 }

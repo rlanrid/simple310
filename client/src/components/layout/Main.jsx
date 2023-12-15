@@ -1,13 +1,11 @@
 import React from 'react'
 
-const Footer = () => {
+const Main = (props) => {
     return (
-        <footer id='footer' role='contentinfo'>
-            <a href='mailto:rladnrider77@gmail.com' rel='noopenner noreferrer'>
-                rlanrider@gmail.com
-            </a>
-        </footer>
+        <main id='main' role='main'>
+            {props.children}
+        </main>
     )
 }
 
-export default Footer
+export default Main
